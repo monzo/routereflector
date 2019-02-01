@@ -34,7 +34,9 @@ ifeq ($(ARCH),x86_64)
     override ARCH=amd64
 endif
 
-CONTAINER_NAME=calico/routereflector
+MONZO_VERSION=0.1
+MONZO_NAME=monzoroutereflector
+CONTAINER_NAME=${MONZO_NAME}_${MONZO_VERSION}
 GO_BUILD_VER ?= v0.16
 
 
@@ -79,7 +81,7 @@ endif
 
 
 # standard build target, but nothing to do
-build:
+build: clean image
 
 image: $(IMAGE_CREATED_FILE)
 $(IMAGE_CREATED_BASE): $(IMAGE_CREATED_FILE)
@@ -112,29 +114,10 @@ dist/confd-$(ARCH): dist
 dist:
 	mkdir -p dist
 
-
-###############################################################################
-# tag and push images of any tag
-###############################################################################
-imagetag:
-ifndef IMAGETAG
-	$(error IMAGETAG is undefined - run using make <target> IMAGETAG=X.Y.Z)
-endif
-
-
-## push all arches
-push-all: imagetag $(addprefix sub-push-,$(ARCHES))
-sub-push-%:
-	$(MAKE) push ARCH=$* IMAGETAG=$(IMAGETAG)
-
 ## push one arch
-push: imagetag
-	docker push $(CONTAINER_NAME):$(IMAGETAG)-$(ARCH)
-	docker push quay.io/$(CONTAINER_NAME):$(IMAGETAG)-$(ARCH)
-ifeq ($(ARCH),amd64)
-	docker push $(CONTAINER_NAME):$(IMAGETAG)
-	docker push quay.io/$(CONTAINER_NAME):$(IMAGETAG)
-endif
+push:
+	docker tag ${CONTAINER_NAME} 442690283804.dkr.ecr.eu-west-1.amazonaws.com/build_ecr:${CONTAINER_NAME} && \
+	docker push 442690283804.dkr.ecr.eu-west-1.amazonaws.com/build_ecr:${CONTAINER_NAME}
 
 ## tag images of one arch
 tag-images: imagetag
