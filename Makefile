@@ -35,8 +35,8 @@ ifeq ($(ARCH),x86_64)
 endif
 
 MONZO_VERSION=0.1
-MONZO_NAME=monzoroutereflector
-CONTAINER_NAME=${MONZO_NAME}_${MONZO_VERSION}
+MONZO_NAME=monzo-routereflector
+CONTAINER_NAME=${MONZO_NAME}-${MONZO_VERSION}
 GO_BUILD_VER ?= v0.16
 
 
