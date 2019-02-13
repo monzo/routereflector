@@ -182,29 +182,9 @@ def run_command_killable_and_import_envvars(*argv):
 def kill_all_processes(time_limit):
 	info("Killing all processes...")
 	try:
-		os.kill(-1, signal.SIGTERM)
+		os.kill(-1, signal.SIGKILL)
 	except OSError:
 		pass
-	signal.alarm(time_limit)
-	try:
-		# Wait until no more child processes exist.
-		done = False
-		while not done:
-			try:
-				os.waitpid(-1, 0)
-			except OSError as e:
-				if e.errno == errno.ECHILD:
-					done = True
-				else:
-					raise
-	except AlarmException:
-		warn("Not all processes have exited in time. Forcing them to exit.")
-		try:
-			os.kill(-1, signal.SIGKILL)
-		except OSError:
-			pass
-	finally:
-		signal.alarm(0)
 
 def run_startup_files():
 	# Run /etc/my_init.d/*
@@ -258,7 +238,7 @@ def main(args):
 
 	if not args.skip_startup_files:
 		run_startup_files()
-	
+
 	runit_exited = False
 	exit_code = None
 
