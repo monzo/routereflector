@@ -34,7 +34,7 @@ ifeq ($(ARCH),x86_64)
     override ARCH=amd64
 endif
 
-MONZO_VERSION=0.1
+MONZO_VERSION=0.2
 MONZO_NAME=monzo-routereflector
 CONTAINER_NAME=${MONZO_NAME}-${MONZO_VERSION}
 GO_BUILD_VER ?= v0.16
